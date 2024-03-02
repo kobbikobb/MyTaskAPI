@@ -2,13 +2,9 @@
 
 A simple rest API for Tasks.
 
-# To start in proction
+# To start
 - npm install --production
-- npm run build
-- node dist/index.js
-
-# To start locally
-- npm run start-local
+- node api.js
 
 # Format json in the terminal
 - brew install jq
