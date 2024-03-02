@@ -2,12 +2,13 @@
     "name": "mytaskapi",
     "version": "1.0.0",
     "description": "A simple API for my tasks",
-    "main": "index.js",
+    "main": "dist/index.js",
     "type": "commonjs",
     "scripts": {
         "build": "babel src --out-dir dist",
         "start-local": "npm run build && node dist/api.js",
         "test": "jest",
+        "test:watch": "jest --watch",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix"
     },
