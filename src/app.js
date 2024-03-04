@@ -1,74 +1,68 @@
 import express from 'express';
 
-const app = express();
+function buildApp(database) {
+    const app = express();
 
-// Middleware to parse JSON requests
-app.use(express.json());
+    // Middleware to parse JSON requests
+    app.use(express.json());
 
-const tasks = [
-    {
-        id: 1, description: 'Complete Node.js project', targetDate: '2024-02-20', isCompleted: false,
-    },
-    {
-        id: 2, description: 'Learn Express.js', targetDate: '2024-02-25', isCompleted: true,
-    },
-];
+    const idFromReq = (req) => parseInt(req.params.id, 10);
 
-const getNewId = () => {
-    const reducer = (max, task) => (task.id > max ? task.id : max);
-    const maxId = tasks.reduce(reducer, tasks.length > 0 ? tasks[0].id : 0);
-    return maxId + 1;
-};
+    // Get tasks
+    app.get('/tasks', (req, res) => {
+        const tasks = database.getTasks();
+        res.json(tasks);
+    });
 
-const idFromReq = (req) => parseInt(req.params.id, 10);
+    // Get a task by id
+    app.get('/tasks/:id', (req, res) => {
+        const task = database.findTask(idFromReq(req));
+        if (!task) {
+            return res.status(404).send('Task not found.');
+        }
+        return res.json(task);
+    });
 
-// Get tasks
-app.get('/tasks', (req, res) => {
-    res.json(tasks);
-});
+    // Create a task
+    app.post('/tasks', (req, res) => {
+        const { description, targetDate, isCompleted } = req.body;
+        const task = {
+            description,
+            targetDate,
+            isCompleted: isCompleted || false,
+        };
 
-// Get a task by id
-app.get('/tasks/:id', (req, res) => {
-    const task = tasks.find((t) => t.id === idFromReq(req));
-    if (!task) {
-        return res.status(404).send('Task not found.');
-    }
-    return res.json(task);
-});
+        const createdTask = database.createTask(task);
 
-// Create a task
-app.post('/tasks', (req, res) => {
-    const { description, targetDate, isCompleted } = req.body;
-    const task = {
-        id: getNewId(),
-        description,
-        targetDate,
-        isCompleted: isCompleted || false,
-    };
-    tasks.push(task);
-    return res.status(201).json(task);
-});
+        return res.status(201).json(createdTask);
+    });
 
-// Update a task
-app.put('/tasks/:id', (req, res) => {
-    const task = tasks.find((t) => t.id === idFromReq(req));
-    if (!task) {
-        return res.status(404).send('Task not found.');
-    }
-    task.description = req.body.description || task.description;
-    task.targetDate = req.body.targetDate || task.targetDate;
-    task.isCompleted = req.body.isCompleted || task.isCompleted;
-    return res.json(task);
-});
+    // Update a task
+    app.put('/tasks/:id', (req, res) => {
+        const task = database.findTask(idFromReq(req));
+        if (!task) {
+            return res.status(404).send('Task not found.');
+        }
+        task.description = req.body.description || task.description;
+        task.targetDate = req.body.targetDate || task.targetDate;
+        task.isCompleted = req.body.isCompleted || task.isCompleted;
 
-// Delete a task
-app.delete('/tasks/:id', (req, res) => {
-    const taskIndex = tasks.findIndex((t) => t.id === idFromReq(req));
-    if (taskIndex === -1) {
-        return res.status(404).send('Task not found.');
-    }
-    tasks.splice(taskIndex, 1);
-    return res.status(204).send();
-});
+        const updatedTask = database.updateTask(task);
 
-export default app;
+        return res.json(updatedTask);
+    });
+
+    // Delete a task
+    app.delete('/tasks/:id', (req, res) => {
+        const task = database.findTask(idFromReq(req));
+        if (!task) {
+            return res.status(404).send('Task not found.');
+        }
+
+        database.deleteTask(task);
+
+        return res.status(204).send();
+    });
+    return app;
+}
+export default buildApp;
