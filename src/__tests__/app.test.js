@@ -1,5 +1,8 @@
 import request from 'supertest';
-import app from '../app';
+import buildApp from '../app';
+import fakeDatabase from '../fakeDatabase';
+
+const app = buildApp(fakeDatabase);
 
 describe('app', () => {
     it('should get tasks', async () => {

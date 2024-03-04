@@ -1,4 +1,7 @@
-import app from './app';
+import buildApp from './app';
+import fakeDatabase from './fakeDatabase';
+
+const app = buildApp(fakeDatabase);
 
 const PORT = process.env.PORT || 3000;
 
