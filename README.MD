@@ -2,13 +2,12 @@
 
 A simple rest API for Tasks.
 
-# To start in proction
-- npm install --production
-- npm run build
-- node dist/index.js
-
 # To start locally
 - npm run start-local
+
+# To create a produciton build for AWS Lambda
+- ./prod-build.sh
+- copy zip file from /prod-build/prod-build.zip into AWS Lambda.
 
 # Format json in the terminal
 - brew install jq
