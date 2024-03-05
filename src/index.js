@@ -1,5 +1,8 @@
 import serverless from 'serverless-http';
-import app from './app';
+import buildApp from './app';
+import fakeDatabase from './fakeDatabase';
 
-const handler = serverless(app);
-export default handler;
+const app = buildApp(fakeDatabase);
+
+/* eslint-disable-next-line import/prefer-default-export */
+export const handler = serverless(app);
