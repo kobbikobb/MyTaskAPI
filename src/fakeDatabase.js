@@ -15,15 +15,15 @@ const getNewId = () => {
 
 const database = {
 
-    getTasks() {
+    async getTasks() {
         return tasks;
     },
 
-    findTask(id) {
+    async findTask(id) {
         return tasks.find((t) => t.id === id);
     },
 
-    createTask(task) {
+    async createTask(task) {
         const newTask = {
             id: getNewId(),
             description: task.description,
@@ -36,7 +36,7 @@ const database = {
         return newTask;
     },
 
-    updateTask(task) {
+    async updateTask(task) {
         const existingTask = this.findTask(task.id);
         if (!existingTask) {
             throw Error('Task not found.');
@@ -48,7 +48,7 @@ const database = {
         return existingTask;
     },
 
-    deleteTask(task) {
+    async deleteTask(task) {
         const taskIndex = tasks.findIndex((t) => t.id === task.id);
         if (taskIndex === -1) {
             throw Error('Task not found.');
