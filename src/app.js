@@ -9,14 +9,14 @@ function buildApp(database) {
     const idFromReq = (req) => parseInt(req.params.id, 10);
 
     // Get tasks
-    app.get('/tasks', (req, res) => {
-        const tasks = database.getTasks();
+    app.get('/tasks', async (req, res) => {
+        const tasks = await database.getTasks();
         res.json(tasks);
     });
 
     // Get a task by id
-    app.get('/tasks/:id', (req, res) => {
-        const task = database.findTask(idFromReq(req));
+    app.get('/tasks/:id', async (req, res) => {
+        const task = await database.findTask(idFromReq(req));
         if (!task) {
             return res.status(404).send('Task not found.');
         }
@@ -24,7 +24,7 @@ function buildApp(database) {
     });
 
     // Create a task
-    app.post('/tasks', (req, res) => {
+    app.post('/tasks', async (req, res) => {
         const { description, targetDate, isCompleted } = req.body;
         const task = {
             description,
@@ -32,14 +32,14 @@ function buildApp(database) {
             isCompleted: isCompleted || false,
         };
 
-        const createdTask = database.createTask(task);
+        const createdTask = await database.createTask(task);
 
         return res.status(201).json(createdTask);
     });
 
     // Update a task
-    app.put('/tasks/:id', (req, res) => {
-        const task = database.findTask(idFromReq(req));
+    app.put('/tasks/:id', async (req, res) => {
+        const task = await database.findTask(idFromReq(req));
         if (!task) {
             return res.status(404).send('Task not found.');
         }
@@ -47,19 +47,19 @@ function buildApp(database) {
         task.targetDate = req.body.targetDate || task.targetDate;
         task.isCompleted = req.body.isCompleted || task.isCompleted;
 
-        const updatedTask = database.updateTask(task);
+        const updatedTask = await database.updateTask(task);
 
         return res.json(updatedTask);
     });
 
     // Delete a task
-    app.delete('/tasks/:id', (req, res) => {
-        const task = database.findTask(idFromReq(req));
+    app.delete('/tasks/:id', async (req, res) => {
+        const task = await database.findTask(idFromReq(req));
         if (!task) {
             return res.status(404).send('Task not found.');
         }
 
-        database.deleteTask(task);
+        await database.deleteTask(task);
 
         return res.status(204).send();
     });
