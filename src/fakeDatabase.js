@@ -1,14 +1,6 @@
-const tasks = [
-];
+import { v4 as uuid } from 'uuid';
 
-const getNewId = () => {
-    if (tasks.length === 0) {
-        return 223;
-    }
-    const reducer = (max, task) => (task.id > max ? task.id : max);
-    const maxId = tasks.reduce(reducer, tasks.length > 0 ? tasks[0].id : 0);
-    return maxId + 1;
-};
+const tasks = [];
 
 const database = {
 
@@ -22,7 +14,7 @@ const database = {
 
     async createTask(task) {
         const newTask = {
-            id: getNewId(),
+            id: uuid(),
             description: task.description,
             targetDate: task.targetDate,
             isCompleted: task.isCompleted,

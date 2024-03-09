@@ -6,7 +6,7 @@ function buildApp(database) {
     // Middleware to parse JSON requests
     app.use(express.json());
 
-    const idFromReq = (req) => parseInt(req.params.id, 10);
+    const idFromReq = (req) => req.params.id;
 
     // Get tasks
     app.get('/tasks', async (req, res) => {
