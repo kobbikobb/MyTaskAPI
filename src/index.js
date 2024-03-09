@@ -1,8 +1,8 @@
 import serverless from 'serverless-http';
 import buildApp from './app';
-import fakeDatabase from './fakeDatabase';
+import database from './dynamodbDatabase';
 
-const app = buildApp(fakeDatabase);
+const app = buildApp(database);
 
 /* eslint-disable-next-line import/prefer-default-export */
 export const handler = serverless(app);
