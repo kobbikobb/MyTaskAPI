@@ -16,7 +16,8 @@ function buildApp(database) {
 
     // Get a task by id
     app.get('/tasks/:id', async (req, res) => {
-        const task = await database.findTask(idFromReq(req));
+        const id = idFromReq(req);
+        const task = await database.findTask(id);
         if (!task) {
             return res.status(404).send('Task not found.');
         }
