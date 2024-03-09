@@ -6,7 +6,7 @@ function buildApp(database) {
     // Middleware to parse JSON requests
     app.use(express.json());
 
-    const idFromReq = (req) => parseInt(req.params.id, 10);
+    const idFromReq = (req) => req.params.id;
 
     // Get tasks
     app.get('/tasks', async (req, res) => {
@@ -16,7 +16,8 @@ function buildApp(database) {
 
     // Get a task by id
     app.get('/tasks/:id', async (req, res) => {
-        const task = await database.findTask(idFromReq(req));
+        const id = idFromReq(req);
+        const task = await database.findTask(id);
         if (!task) {
             return res.status(404).send('Task not found.');
         }
