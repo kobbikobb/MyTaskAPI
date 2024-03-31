@@ -3,7 +3,8 @@ import { DynamoDB } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocument } from '@aws-sdk/lib-dynamodb';
 import { v4 as uuid } from 'uuid';
 
-const dynamodb = DynamoDBDocument.from(new DynamoDB());
+const awsRegion = 'us-east-1';
+const dynamodb = DynamoDBDocument.from(new DynamoDB({ region: awsRegion }));
 const tableName = 'my-task-dynamodb-table';
 
 const database = {
@@ -36,8 +37,7 @@ const database = {
                 targetDate: task.targetDate,
                 isCompleted: task.isCompleted,
             };
-            const response = await dynamodb.put({ TableName: tableName, Item: newTask });
-            return response;
+            return dynamodb.put({ TableName: tableName, Item: newTask });
         } catch (error) {
             console.error('Error creating task:', error);
             throw error;
@@ -52,8 +52,7 @@ const database = {
                 targetDate: task.targetDate,
                 isCompleted: task.isCompleted,
             };
-            const response = await dynamodb.put({ TableName: tableName, Item: updatedTask });
-            return response;
+            return dynamodb.put({ TableName: tableName, Item: updatedTask });
         } catch (error) {
             console.error('Error updating task:', error);
             throw error;
@@ -63,8 +62,7 @@ const database = {
     async deleteTask(task) {
         try {
             const { id } = task;
-            const response = await dynamodb.delete({ TableName: tableName, Key: { id } });
-            return response;
+            return dynamodb.delete({ TableName: tableName, Key: { id } });
         } catch (error) {
             console.error('Error deleting task:', error);
             throw error;
